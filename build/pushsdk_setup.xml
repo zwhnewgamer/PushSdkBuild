@@ -241,6 +241,8 @@ android.library.reference.${ref.index}=${sdk.library.project}</concat>
 		<antcall target="add.READ_PHONE_STATE" />
 		<antcall target="add.SYSTEM_ALERT_WINDOW" />
 		<antcall target="add.READ_CALL_LOG" />
+		<antcall target="add.BLUETOOTH" />
+		<antcall target="add.BLUETOOTH_ADMIN" />
 		<!--
 		<antcall target="add.ACCESS_MOCK_LOCATION" />
 		<antcall target="add.ACCESS_COARSE_LOCATION" />
@@ -255,7 +257,6 @@ android.library.reference.${ref.index}=${sdk.library.project}</concat>
 		<add.sdk.permission permission="${input.tgx.android.permissions.SERVICE}" />
 		<add.sdk.permission permission="${input.tgx.android.permissions.CLIENT}" />
 		<add.sdk.permission permission="${input.tgx.android.permissions.VOTE}" />
-		
 		<echo message="添加完成，请将workspace中的 PushSDK_Release 导入到 eclipse" />
 	</target>
 
