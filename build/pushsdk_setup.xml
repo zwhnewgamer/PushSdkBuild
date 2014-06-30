@@ -53,7 +53,7 @@
 	</target>
 	<available file="${sdk.library.project}" property="hasLibrary-project" />
 	<target name="check-out.library-project" depends="check.libs" unless="hasLibrary-project">
-		<property name="svn.repo.url.pushsdk" value="https://github.com/zwhnewgamer/PushSdkBuild/tree/master/PushSDK_Release" />
+		<property name="svn.repo.url.pushsdk" value="https://github.com/zwhnewgamer/PushSdkBuild.git/trunk/PushSDK_Release" />
 		<tgx.svn.co remote.path="${svn.repo.url.pushsdk}" checkout.path="${sdk.library.project}" />
 		<antcall target="copy-conf" />
 	</target>
@@ -74,10 +74,6 @@
 				<arg value="--non-interactive" />
 				<arg value="--trust-server-cert" />
 				<arg value="--no-auth-cache" />
-				<arg value="--username"/>
-				<arg value="zhuwenhui"/>
-				<arg value="--password"/>
-				<arg value="zwh"/>
 				<arg value="@{remote.path}/" />
 				<arg value="@{checkout.path}" />
 			</exec>
@@ -94,10 +90,6 @@
 				<arg value="--non-interactive" />
 				<arg value="--trust-server-cert" />
 				<arg value="--no-auth-cache" />
-				<arg value="--username"/>
-				<arg value="zhuwenhui"/>
-				<arg value="--password"/>
-				<arg value="zwh"/>
 			</exec>
 			<echo>svn update ok.</echo>
 		</sequential>
@@ -347,6 +339,7 @@ android.library.reference.${ref.index}=${sdk.library.project}</concat>
 		<copy todir="${basedir}/libs" overwrite="true">
 			<fileset dir="${sdk.library.project}/libs">
 				<include name="*.jar" />
+			    <include name="**/*.*" />
 				<exclude name="android-support-v4.jar" />
 			</fileset>
 		</copy>

@@ -11,3 +11,6 @@ pushsdk.conf 	文件为默认配置，可以在此基础上修改。当文件不
 
 config.xml 		配置文件生成脚本。
 
+
+build
+------

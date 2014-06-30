@@ -1,0 +1,23 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="PushSdk_Theme" parent="android:Theme.Light.NoTitleBar"></style>
+
+    <style name="PushSdk_Theme.ProgressBar.Horizontal" parent="android:Widget.ProgressBar.Horizontal"></style>
+
+    <style name="PushSdk_Dialog" parent="@style/PushSdk_Theme_Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="PushSdk_Theme_Dialog" parent="@style/PushSdk_Theme">
+        <item name="android:windowBackground">@color/pushsdk_color_translucent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+    
+</resources>
