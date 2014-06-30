@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ConfigPushSDK" basedir="." default="modify-string">
+	<property name="conf.file" value="${basedir}/pushsdk.conf" />
+	<available file="${conf.file}" property="hasSdkConf" />
+	<target name="InputConf" unless="hasSdkConf">
+		<input addproperty="input.tgx.android.permissions.SERVICE" message="设置SDK的Service 请求Permission" />
+		<condition property="in.permission_service">
+			<not>
+				<equals arg1="${input.tgx.android.permissions.SERVICE}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置permission_service" unless="in.permission_service" />
+
+		<input addproperty="input.tgx.android.permissions.PROVIDER" message="设置SDK的Provider 请求Permission" />
+		<condition property="in.permission_provider">
+			<not>
+				<equals arg1="${input.tgx.android.permissions.PROVIDER}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置permission_provider" unless="in.permission_provider" />
+
+		<input addproperty="input.tgx.android.permissions.VOTE" message="设置SDK的自协商 请求Permission" />
+		<condition property="in.permission_vote">
+			<not>
+				<equals arg1="${input.tgx.android.permissions.VOTE}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置permission_vote" unless="in.permission_vote" />
+
+		<input addproperty="input.tgx.android.permissions.CLIENT" message="设置SDK的Client 接收响应 限定的 Permission" />
+		<condition property="in.permission_client">
+			<not>
+				<equals arg1="${input.tgx.android.permissions.CLIENT}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置permission_client" unless="in.permission_client" />
+
+		<input addproperty="input.tgx.intent.protect.service.action.START" message="设置SDK的共享服务启动 action" />
+		<condition property="in.action_protect_service_start">
+			<not>
+				<equals arg1="${input.tgx.intent.protect.service.action.START}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_protected_service_start" unless="in.action_protect_service_start" />
+
+		<input addproperty="input.tgx.intent.protect.service.action.BROADCAST" message="设置SDK的Service 接收广播的Action" />
+		<condition property="in.action_protect_broadcast_service">
+			<not>
+				<equals arg1="${input.tgx.intent.protect.service.action.BROADCAST}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_protect_broadcast_service" unless="in.action_protect_broadcast_service" />
+
+		<input addproperty="input.tgx.intent.protect.client.action.BROADCAST" message="设置SDK的Client 接收广播的Action" />
+		<condition property="in.action_protect_broadcast_client">
+			<not>
+				<equals arg1="${input.tgx.intent.protect.client.action.BROADCAST}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_protect_broadcast_client" unless="in.action_protect_broadcast_client" />
+
+		<input addproperty="input.tgx.intent.opensdk.action.VOTE" message="设置SDK的自协商发起广播的Action" />
+		<condition property="in.action_opensdk_vote">
+			<not>
+				<equals arg1="${input.tgx.intent.opensdk.action.VOTE}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_opensdk_vote" unless="in.action_opensdk_vote" />
+
+		<input addproperty="input.tgx.intent.opensdk.action.CONSULT" message="设置SDK的自协商结果接收广播的Action" />
+		<condition property="in.action_opensdk_consult">
+			<not>
+				<equals arg1="${input.tgx.intent.opensdk.action.CONSULT}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_opensdk_consult" unless="in.action_opensdk_consult" />
+
+		<input addproperty="input.tgx.intent.api.service.action.START" message="设置SDK的api Service 启动的Action" />
+		<condition property="in.action_api_service_start">
+			<not>
+				<equals arg1="${input.tgx.intent.api.service.action.START}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置action_api_service_start" unless="in.action_api_service_start" />
+
+		<input addproperty="input.tgx.sdk.appid" message="设置分配好的appid" />
+		<condition property="in.sdk_appid">
+			<not>
+				<equals arg1="${input.tgx.sdk.appid}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置sdk_appid" unless="in.sdk_appid" />
+
+		<input addproperty="input.tgx.sdk.appkey" message="设置分配好的appkey" />
+		<condition property="in.sdk_appkey">
+			<not>
+				<equals arg1="${input.tgx.sdk.appkey}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置sdk_appkey" unless="in.sdk_appkey" />
+
+		<input addproperty="input.tgx.sdk.domain" message="设置sdk使用的域" />
+		<condition property="in.sdk_domain">
+			<not>
+				<equals arg1="${input.tgx.sdk.domain}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置sdk_domain" unless="in.sdk_domain" />
+
+		<input addproperty="input.tgx.sdk.scheme" message="设置sdk使用的scheme" />
+		<condition property="in.sdk_scheme">
+			<not>
+				<equals arg1="${input.tgx.sdk.scheme}" arg2="" trim="true" />
+			</not>
+		</condition>
+		<fail message="沒有設置sdk_scheme" unless="in.sdk_scheme" />
+
+		<echo file="${conf.file}" append="false">#auto generate file , edit it to config sdk "action|permission" strings.
+input.tgx.android.permissions.SERVICE=${input.tgx.android.permissions.SERVICE}
+input.tgx.android.permissions.PROVIDER=${input.tgx.android.permissions.PROVIDER}
+input.tgx.android.permissions.VOTE=${input.tgx.android.permissions.VOTE}
+input.tgx.android.permissions.CLIENT=${input.tgx.android.permissions.CLIENT}
+input.tgx.intent.protect.service.action.START=${input.tgx.intent.protect.service.action.START}
+input.tgx.intent.protect.service.action.BROADCAST=${input.tgx.intent.protect.service.action.BROADCAST}
+input.tgx.intent.protect.client.action.BROADCAST=${input.tgx.intent.protect.client.action.BROADCAST}
+input.tgx.intent.opensdk.action.VOTE=${input.tgx.intent.opensdk.action.VOTE}
+input.tgx.intent.opensdk.action.CONSULT=${input.tgx.intent.opensdk.action.CONSULT}
+input.tgx.intent.api.service.action.START=${input.tgx.intent.api.service.action.START}
+input.tgx.sdk.appid=${input.tgx.sdk.appid}
+input.tgx.sdk.appkey=${input.tgx.sdk.appkey}
+input.tgx.sdk.domain=${input.tgx.sdk.domain}
+input.tgx.sdk.scheme=${input.tgx.sdk.scheme}
+		</echo>
+	</target>
+	<target name="modify-string" depends="InputConf">
+		<property file="${conf.file}" />
+		<echo file="res/values/pushsdk_thirdparty_string.xml" append="false">&lt;?xml version="1.0" encoding="utf-8" standalone="no"?&gt;
+&lt;resources&gt;
+	&lt;string name="permission_service"&gt;${input.tgx.android.permissions.SERVICE}&lt;/string&gt;
+	&lt;string name="permission_provider"&gt;${input.tgx.android.permissions.PROVIDER}&lt;/string&gt;
+	&lt;string name="permission_vote"&gt;${input.tgx.android.permissions.VOTE}&lt;/string&gt;
+	&lt;string name="permission_client"&gt;${input.tgx.android.permissions.CLIENT}&lt;/string&gt;
+	&lt;string name="action_protect_service_start"&gt;${input.tgx.intent.protect.service.action.START}&lt;/string&gt;
+	&lt;string name="action_protect_broadcast_service"&gt;${input.tgx.intent.protect.service.action.BROADCAST}&lt;/string&gt;
+	&lt;string name="action_protect_broadcast_clinet"&gt;${input.tgx.intent.protect.client.action.BROADCAST}&lt;/string&gt;
+	&lt;string name="action_opensdk_vote"&gt;${input.tgx.intent.opensdk.action.VOTE}&lt;/string&gt;
+	&lt;string name="action_opensdk_consult"&gt;${input.tgx.intent.opensdk.action.CONSULT}&lt;/string&gt;
+	&lt;string name="action_api_service_start"&gt;${input.tgx.intent.api.service.action.START}&lt;/string&gt;
+	&lt;string name="sdk_appid"&gt;${input.tgx.sdk.appid}&lt;/string&gt;
+	&lt;string name="sdk_appkey"&gt;${input.tgx.sdk.appkey}&lt;/string&gt;
+	&lt;string name="sdk_domain"&gt;${input.tgx.sdk.domain}&lt;/string&gt;
+	&lt;string name="sdk_scheme"&gt;${input.tgx.sdk.scheme}&lt;/string&gt;
+&lt;/resources&gt;
+		</echo>
+	</target>
+</project>
