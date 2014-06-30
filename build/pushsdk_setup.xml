@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Patch" basedir="." default="setup">
+	<property name="sdk.version.code" value="1" />
+	<property name="sdk.library.project" value="../PushSDK_Release" />
+	<property name="libs.name" value="pushsdk-libs" />
+	<available file="${libs.name}" property="libs.dir.create" />
+	<property name="libs.dir" value="${basedir}/${libs.name}" />
+	<property name="libs.svnkit" value="${libs.dir}/svnkit" />
+	<property name="libs.svnkit.zip.url" value="http://blog.yuewuxian.com/APK/org.tmatesoft.svn_1.7.9.standalone.zip" />
+	<property name="libs.svnkit.zip" value="org.tmatesoft.svn_1.7.9.standalone.zip" />
+	<property name="libs.svnkit.home" value="${libs.svnkit}/svnkit-1.7.9" />
+	<condition property="libs.svnkit.run" value="${libs.svnkit.home}\bin\jsvn.bat" else="${libs.svnkit.home}/bin/jsvn">
+		<os family="windows" />
+	</condition>
+	<available file="AndroidManifest.xml.bak" property="hasBackUp" />
+	<target name="backup-manifest" unless="hasBackUp">
+		<copy file="AndroidManifest.xml" tofile="AndroidManifest.xml.bak" />
+	</target>
+	<target name="revert-manifest">
+		<copy file="AndroidManifest.xml.bak" tofile="AndroidManifest.xml" overwrite="true" />
+	</target>
+	<target name="mkdir-libs" unless="libs.dir.create">
+		<echo level="info" message="create setup libs directory" />
+		<mkdir dir="${libs.dir}" />
+		<mkdir dir="${libs.svnkit}" />
+	</target>
+	<target name="unistall" if="libs.dir.create">
+		<antcall target="revert-manifest" />
+		<delete file="AndroidManifest.xml.bak" />
+		<delete dir="${libs.dir}" includeemptydirs="true" defaultexcludes="false" />
+		<delete dir="${sdk.library.project}" includeemptydirs="true" defaultexcludes="false" />
+		<replaceregexp byline="true" file="project.properties" match="android.library.reference.([0-9]+)=..\057PushSDK_Release" replace="" />
+	</target>
+	<macrodef name="libs.get">
+		<attribute name="dest" />
+		<attribute name="srcurl" />
+		<sequential>
+			<echo level="warning" message="自动下载@{dest}包，请耐心等待···" />
+			<get dest="@{dest}" src="@{srcurl}" verbose="true" />
+		</sequential>
+	</macrodef>
+	<available file="${libs.svnkit}/${libs.svnkit.zip}" property="has_svnkit" />
+	<target name="get.svnkit" unless="has_svnkit">
+		<libs.get dest="${libs.svnkit}/${libs.svnkit.zip}" srcurl="${libs.svnkit.zip.url}" />
+	</target>
+	<available file="${libs.svnkit.home}" property="unzip.svnkit.need" />
+	<target name="unzip.svnkit" depends="get.svnkit" unless="unzip.svnkit.need">
+		<unzip dest="${libs.svnkit}" src="${libs.svnkit}/${libs.svnkit.zip}" />
+		<chmod perm="700" dir="${libs.svnkit.run}" verbose="true" />
+	</target>
+	<target name="check.libs" depends="mkdir-libs,unzip.svnkit">
+		<echo level="info" message="checking depends libs" />
+	</target>
+	<available file="${sdk.library.project}" property="hasLibrary-project" />
+	<target name="check-out.library-project" depends="check.libs" unless="hasLibrary-project">
+		<property name="svn.repo.url.pushsdk" value="https://github.com/zwhnewgamer/PushSdkBuild/tree/master/PushSDK_Release" />
+		<tgx.svn.co remote.path="${svn.repo.url.pushsdk}" checkout.path="${sdk.library.project}" />
+		<antcall target="copy-conf" />
+	</target>
+	<target name="update.library-project" depends="check.libs" if="hasLibrary-project">
+		<tgx.svn.up checkout.path="${sdk.library.project}" />
+		<antcall target="copy-conf" />
+	</target>
+	<available file="pushsdk.conf" property="hasSdkConf" />
+	<target name="copy-conf" if="hasSdkConf">
+		<copy todir="${sdk.library.project}" file="pushsdk.conf" />
+	</target>
+	<macrodef name="tgx.svn.co">
+		<attribute name="remote.path" />
+		<attribute name="checkout.path" />
+		<sequential>
+			<exec executable="${libs.svnkit.run}" failonerror="true">
+				<arg value="checkout" />
+				<arg value="--non-interactive" />
+				<arg value="--trust-server-cert" />
+				<arg value="--no-auth-cache" />
+				<arg value="--username"/>
+				<arg value="zhuwenhui"/>
+				<arg value="--password"/>
+				<arg value="zwh"/>
+				<arg value="@{remote.path}/" />
+				<arg value="@{checkout.path}" />
+			</exec>
+			<echo>svn checkout ok.</echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="tgx.svn.up">
+		<attribute name="checkout.path" />
+		<sequential>
+			<exec executable="${libs.svnkit.run}" failonerror="true">
+				<arg value="update" />
+				<arg value="@{checkout.path}" />
+				<arg value="--non-interactive" />
+				<arg value="--trust-server-cert" />
+				<arg value="--no-auth-cache" />
+				<arg value="--username"/>
+				<arg value="zhuwenhui"/>
+				<arg value="--password"/>
+				<arg value="zwh"/>
+			</exec>
+			<echo>svn update ok.</echo>
+		</sequential>
+	</macrodef>
+	<target name="add.project.library">
+		<loadfile property="library.setting.str" srcFile="${basedir}/project.properties">
+			<filterchain>
+				<tokenfilter>
+					<containsregex pattern="android.library.reference." />
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<echo message="${library.setting.str}" />
+		<condition property="hasLibrary">
+			<contains string="${library.setting.str}" substring="android.library.reference." />
+		</condition>
+		<antcall target="directly.set" />
+		<loadfile property="library.setting.str2" srcFile="${basedir}/project.properties">
+			<filterchain>
+				<tokenfilter>
+					<containsregex pattern="android.library.reference." />
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<echo message="${library.setting.str2}" />
+		<condition property="hasLibrarySet">
+			<and>
+				<contains string="${library.setting.str2}" substring="android.library.reference." />
+				<contains string="${library.setting.str2}" substring="${sdk.library.project}" />
+			</and>
+		</condition>
+
+		<antcall target="output.pre.library.setting" />
+	</target>
+	<target name="directly.set" unless="hasLibrary">
+		<concat append="true" destfile="project.properties" fixlastline="true">
+android.library.reference.1=../PushSDK_Release</concat>
+	</target>
+	<target name="output.pre.library.setting" unless="hasLibrarySet">
+		<property name="temp.file" value="tmp.file" />
+		<concat destfile="${temp.file}" append="false" fixlastline="true">${library.setting.str}
+			<filterchain>
+				<tailfilter lines="3" skip="1" />
+			</filterchain>
+		</concat>
+		<replaceregexp file="${temp.file}" match="(android.library.reference.)+([0-9]+)+(.*)" replace="ref.index=\2" byline="true" />
+		<propertyfile file="${temp.file}">
+			<entry key="ref.index" type="int" operation="+" value="1" />
+		</propertyfile>
+		<loadproperties srcFile="${temp.file}" />
+		<delete file="${temp.file}" />
+		<concat append="true" destfile="project.properties" fixlastline="false">
+android.library.reference.${ref.index}=${sdk.library.project}</concat>
+	</target>
+
+	<target name="setup" depends="backup-manifest,update.library-project,check-out.library-project">
+		<antcall target="revert-manifest" />
+		<antcall target="add.project.library" />
+		<ant antfile="${sdk.library.project}/config.xml" dir="${sdk.library.project}" />
+		<loadproperties srcfile="${sdk.library.project}/pushsdk.conf" />
+		<antcall target="copylibs" />
+		<replaceregexp file="AndroidManifest.xml" match="^[ \t]+(\074\057application\076)" byline="true">
+			<substitution expression="&lt;service&#13;&#10;android:name=&#34;com.tgx.push.sdk.MasterService&#34;&#13;&#10;android:permission=&#34;${input.tgx.android.permissions.SERVICE}&#34;&#13;&#10;android:process=&#34;com.tgx.pushsdk.master.service&#34;&gt;&#13;&#10;&lt;intent-filter&gt;&#13;&#10;&lt;action android:name=&#34;${input.tgx.intent.protect.service.action.START}&#34;/&gt;&#13;&#10;&lt;/intent-filter&gt;&#13;&#10;&lt;/service&gt;&#13;&#10;&#13;&#10;&lt;service android:name=&#34;com.tgx.push.sdk.SdkService&#34;/&gt;&#13;&#10;&#13;&#10;&lt;receiver&#13;&#10;android:name=&#34;com.tgx.push.sdk.AutoConsultReceiver&#34;&#13;&#10;android:permission=&#34;${input.tgx.android.permissions.VOTE}&#34;&#13;&#10;android:process=&#34;com.tgx.pushsdk.master.service&#34;&gt;&#13;&#10;&lt;intent-filter android:priority=&#34;${sdk.version.code}&#34;&gt;&#13;&#10;&lt;action android:name=&#34;${input.tgx.intent.opensdk.action.VOTE}&#34;/&gt;&#13;&#10;&#13;&#10;&lt;data&#13;&#10;android:host=&#34;${input.tgx.sdk.domain}&#34;&#13;&#10;android:scheme=&#34;${input.tgx.sdk.scheme}&#34;/&gt;&#13;&#10;&lt;/intent-filter&gt;&#13;&#10;&lt;/receiver&gt;&#13;&#10;&lt;receiver android:name=&#34;com.tgx.push.sdk.StaticReceiver&#34;&gt;&#13;&#10;&lt;intent-filter&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_ADDED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_CHANGED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_DATA_CLEARED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_INSTALL&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_REMOVED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_REPLACED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.intent.action.PACKAGE_RESTARTED&#34;/&gt;&#13;&#10;&lt;action android:name=&#34;android.net.conn.CONNECTIVITY_CHANGE&#34;/&gt;&#13;&#10;&lt;/intent-filter&gt;&#13;&#10;&lt;/receiver&gt;&#13;&#10;&#60;&#47;application&#62;" />
+		</replaceregexp>
+		<loadfile property="manifest.string" srcfile="AndroidManifest.xml" />
+		<condition property="hasPermission.BATTERY_STATS">
+			<contains string="${manifest.string}" substring="android.permission.BATTERY_STATS" />
+		</condition>
+		<condition property="hasPermission.INTERNET">
+			<contains string="${manifest.string}" substring="android.permission.INTERNET" />
+		</condition>
+		<condition property="hasPermission.ACCESS_WIFI_STATE">
+			<contains string="${manifest.string}" substring="android.permission.ACCESS_WIFI_STATE" />
+		</condition>
+		<condition property="hasPermission.ACCESS_NETWORK_STATE">
+			<contains string="${manifest.string}" substring="android.permission.ACCESS_NETWORK_STATE" />
+		</condition>
+		<condition property="hasPermission.CHANGE_NETWORK_STATE">
+			<contains string="${manifest.string}" substring="android.permission.CHANGE_NETWORK_STATE" />
+		</condition>
+		<condition property="hasPermission.CHANGE_WIFI_STATE">
+			<contains string="${manifest.string}" substring="android.permission.CHANGE_WIFI_STATE" />
+		</condition>
+		<condition property="hasPermission.VIBRATE">
+			<contains string="${manifest.string}" substring="android.permission.VIBRATE" />
+		</condition>
+		<condition property="hasPermission.INSTALL_PACKAGES">
+			<contains string="${manifest.string}" substring="android.permission.INSTALL_PACKAGES" />
+		</condition>
+		<condition property="hasPermission.DELETE_PACKAGES">
+			<contains string="${manifest.string}" substring="android.permission.DELETE_PACKAGES" />
+		</condition>
+		<condition property="hasPermission.WRITE_EXTERNAL_STORAGE">
+			<contains string="${manifest.string}" substring="android.permission.WRITE_EXTERNAL_STORAGE" />
+		</condition>
+		<condition property="hasPermission.GET_PACKAGE_SIZE">
+			<contains string="${manifest.string}" substring="android.permission.GET_PACKAGE_SIZE" />
+		</condition>
+		<condition property="hasPermission.BROADCAST_STICKY">
+			<contains string="${manifest.string}" substring="android.permission.BROADCAST_STICKY" />
+		</condition>
+		<condition property="hasPermission.READ_PHONE_STATE">
+			<contains string="${manifest.string}" substring="android.permission.READ_PHONE_STATE" />
+		</condition>
+		<condition property="hasPermission.SYSTEM_ALERT_WINDOW">
+			<contains string="${manifest.string}" substring="android.permission.SYSTEM_ALERT_WINDOW" />
+		</condition>
+		<condition property="hasPermission.READ_CALL_LOG">
+			<contains string="${manifest.string}" substring="android.permission.READ_CALL_LOG" />
+		</condition>
+		<condition property="hasPermission.ACCESS_MOCK_LOCATION">
+			<contains string="${manifest.string}" substring="android.permission.ACCESS_MOCK_LOCATION" />
+		</condition>
+		<condition property="hasPermission.ACCESS_COARSE_LOCATION">
+			<contains string="${manifest.string}" substring="android.permission.ACCESS_COARSE_LOCATION" />
+		</condition>
+		<condition property="hasPermission.ACCESS_FINE_LOCATION">
+			<contains string="${manifest.string}" substring="android.permission.ACCESS_FINE_LOCATION" />
+		</condition>
+		<condition property="hasPermission.GET_TASKS">
+			<contains string="${manifest.string}" substring="android.permission.GET_TASKS" />
+		</condition>
+		<condition property="hasPermission.REORDER_TASKS">
+			<contains string="${manifest.string}" substring="android.permission.REORDER_TASKS" />
+		</condition>
+		<condition property="hasPermission.WAKE_LOCK">
+			<contains string="${manifest.string}" substring="android.permission.WAKE_LOCK" />
+		</condition>
+		<condition property="hasPermission.BLUETOOTH">
+			<contains string="${manifest.string}" substring="android.permission.BLUETOOTH" />
+		</condition>
+		<condition property="hasPermission.BLUETOOTH_ADMIN">
+			<contains string="${manifest.string}" substring="android.permission.BLUETOOTH_ADMIN" />
+		</condition>
+		<antcall target="add.BATTERY_STATS" />
+		<antcall target="add.INSTALL_SHORTCUT" />
+		<antcall target="add.UNINSTALL_SHORTCUT" />
+		<antcall target="add.INTERNET" />
+		<antcall target="add.ACCESS_WIFI_STATE" />
+		<antcall target="add.ACCESS_NETWORK_STATE" />
+		<antcall target="add.CHANGE_NETWORK_STATE" />
+		<antcall target="add.CHANGE_WIFI_STATE" />
+		<antcall target="add.VIBRATE" />
+		<antcall target="add.INSTALL_PACKAGES" />
+		<antcall target="add.DELETE_PACKAGES" />
+		<antcall target="add.WRITE_EXTERNAL_STORAGE" />
+		<antcall target="add.GET_PACKAGE_SIZE" />
+		<antcall target="add.BROADCAST_STICKY" />
+		<antcall target="add.READ_PHONE_STATE" />
+		<antcall target="add.SYSTEM_ALERT_WINDOW" />
+		<antcall target="add.READ_CALL_LOG" />
+		<!--
+		<antcall target="add.ACCESS_MOCK_LOCATION" />
+		<antcall target="add.ACCESS_COARSE_LOCATION" />
+		<antcall target="add.ACCESS_FINE_LOCATION" />
+		-->
+		<antcall target="add.GET_TASKS" />
+		<antcall target="add.REORDER_TASKS" />
+		<antcall target="add.WAKE_LOCK" />
+		<set.sdk.permission permission="${input.tgx.android.permissions.SERVICE}" />
+		<set.sdk.permission permission="${input.tgx.android.permissions.CLIENT}" />
+		<set.sdk.permission permission="${input.tgx.android.permissions.VOTE}" />
+		<add.sdk.permission permission="${input.tgx.android.permissions.SERVICE}" />
+		<add.sdk.permission permission="${input.tgx.android.permissions.CLIENT}" />
+		<add.sdk.permission permission="${input.tgx.android.permissions.VOTE}" />
+		
+		<echo message="添加完成，请将workspace中的 PushSDK_Release 导入到 eclipse" />
+	</target>
+
+	<target name="add.BATTERY_STATS" unless="hasPermission.BATTERY_STATS">
+		<add.sdk.permission permission="android.permission.BATTERY_STATS" />
+	</target>
+	<target name="add.INSTALL_SHORTCUT" unless="hasPermission.INSTALL_SHORTCUT">
+		<add.sdk.permission permission="com.android.launcher.permission.INSTALL_SHORTCUT" />
+	</target>
+	<target name="add.UNINSTALL_SHORTCUT" unless="hasPermission.UNINSTALL_SHORTCUT">
+		<add.sdk.permission permission="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+	</target>
+	<target name="add.INTERNET" unless="hasPermission.INTERNET">
+		<add.sdk.permission permission="android.permission.INTERNET" />
+	</target>
+	<target name="add.ACCESS_WIFI_STATE" unless="hasPermission.ACCESS_WIFI_STATE">
+		<add.sdk.permission permission="android.permission.ACCESS_WIFI_STATE" />
+	</target>
+	<target name="add.ACCESS_NETWORK_STATE" unless="hasPermission.ACCESS_NETWORK_STATE">
+		<add.sdk.permission permission="android.permission.ACCESS_NETWORK_STATE" />
+	</target>
+	<target name="add.CHANGE_NETWORK_STATE" unless="hasPermission.CHANGE_NETWORK_STATE">
+		<add.sdk.permission permission="android.permission.CHANGE_NETWORK_STATE" />
+	</target>
+	<target name="add.CHANGE_WIFI_STATE" unless="hasPermission.CHANGE_WIFI_STATE">
+		<add.sdk.permission permission="android.permission.CHANGE_WIFI_STATE" />
+	</target>
+	<target name="add.VIBRATE" unless="hasPermission.VIBRATE">
+		<add.sdk.permission permission="android.permission.VIBRATE" />
+	</target>
+	<target name="add.INSTALL_PACKAGES" unless="hasPermission.INSTALL_PACKAGES">
+		<add.sdk.permission permission="android.permission.INSTALL_PACKAGES" />
+	</target>
+	<target name="add.DELETE_PACKAGES" unless="hasPermission.DELETE_PACKAGES">
+		<add.sdk.permission permission="android.permission.DELETE_PACKAGES" />
+	</target>
+	<target name="add.WRITE_EXTERNAL_STORAGE" unless="hasPermission.WRITE_EXTERNAL_STORAGE">
+		<add.sdk.permission permission="android.permission.WRITE_EXTERNAL_STORAGE" />
+	</target>
+	<target name="add.GET_PACKAGE_SIZE" unless="hasPermission.GET_PACKAGE_SIZE">
+		<add.sdk.permission permission="android.permission.GET_PACKAGE_SIZE" />
+	</target>
+	<target name="add.BROADCAST_STICKY" unless="hasPermission.BROADCAST_STICKY">
+		<add.sdk.permission permission="android.permission.BROADCAST_STICKY" />
+	</target>
+	<target name="add.READ_PHONE_STATE" unless="hasPermission.READ_PHONE_STATE">
+		<add.sdk.permission permission="android.permission.READ_PHONE_STATE" />
+	</target>
+	<target name="add.SYSTEM_ALERT_WINDOW" unless="hasPermission.SYSTEM_ALERT_WINDOW">
+		<add.sdk.permission permission="android.permission.SYSTEM_ALERT_WINDOW" />
+	</target>
+	<target name="add.READ_CALL_LOG" unless="hasPermission.READ_CALL_LOG">
+		<add.sdk.permission permission="android.permission.READ_CALL_LOG" />
+	</target>
+	<target name="add.ACCESS_MOCK_LOCATION" unless="hasPermission.ACCESS_MOCK_LOCATION">
+		<add.sdk.permission permission="android.permission.ACCESS_MOCK_LOCATION" />
+	</target>
+	<target name="add.ACCESS_COARSE_LOCATION" unless="hasPermission.ACCESS_COARSE_LOCATION">
+		<add.sdk.permission permission="android.permission.ACCESS_COARSE_LOCATION" />
+	</target>
+	<target name="add.ACCESS_FINE_LOCATION" unless="hasPermission.ACCESS_FINE_LOCATION">
+		<add.sdk.permission permission="android.permission.ACCESS_FINE_LOCATION" />
+	</target>
+	<target name="add.GET_TASKS" unless="hasPermission.GET_TASKS">
+		<add.sdk.permission permission="android.permission.GET_TASKS" />
+	</target>
+	<target name="add.REORDER_TASKS" unless="hasPermission.REORDER_TASKS">
+		<add.sdk.permission permission="android.permission.REORDER_TASKS" />
+	</target>
+	<target name="add.WAKE_LOCK" unless="hasPermission.WAKE_LOCK">
+		<add.sdk.permission permission="android.permission.WAKE_LOCK" />
+	</target>
+	<target name="add.BLUETOOTH" unless="hasPermission.BLUETOOTH">
+		<add.sdk.permission permission="android.permission.BLUETOOTH" />
+	</target>
+	<target name="add.BLUETOOTH_ADMIN" unless="hasPermission.BLUETOOTH">
+		<add.sdk.permission permission="android.permission.BLUETOOTH_ADMIN" />
+	</target>
+	
+	<target name="copylibs">
+		<copy todir="${basedir}/libs" overwrite="true">
+			<fileset dir="${sdk.library.project}/libs">
+				<include name="*.jar" />
+				<exclude name="android-support-v4.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${basedir}/assets" overwrite="true">
+			<fileset dir="${sdk.library.project}/assets">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		<antcall target="check-targetSdkVersion" />
+	</target>
+	<target name="check-targetSdkVersion">
+		<loadproperties srcfile="project.properties" />
+		
+		<replaceregexp file="${sdk.library.project}/project.properties" byline="true" match="target=android-(.*)" replace="target=${target}" />
+		
+		<loadfile property="target.string" srcfile="project.properties" />
+		
+		<condition property="target=android-8">
+			<contains string="${target.string}" substring="target=android-8" />
+		</condition>
+		<condition property="target=android-9">
+			<contains string="${target.string}" substring="target=android-9" />
+		</condition>
+		<condition property="target=android-10">
+			<contains string="${target.string}" substring="target=android-10" />
+		</condition>
+		<condition property="target=android-11">
+			<contains string="${target.string}" substring="target=android-11"/>
+		</condition>
+		<condition property="target=android-12">
+			<contains string="${target.string}" substring="target=android-12" />
+		</condition>
+		<condition property="target=android-13">
+			<contains string="${target.string}" substring="target=android-13" />
+		</condition>
+		<antcall target="check-v8" />
+		<antcall target="check-v9" />
+		<antcall target="check-v10" />
+		<antcall target="check-v11" />
+		<antcall target="check-v12" />
+		<antcall target="check-v13" />
+	</target>
+	
+	<target name="check-v8" if="${target=android-8}">
+		<delete dir="${sdk.library.project}/res/values-v11" />
+		<delete dir="${sdk.library.project}/res/values-v14" />
+	</target>
+	<target name="check-v9" if="${target=android-9}">
+			<delete dir="${sdk.library.project}/res/values-v11" />
+			<delete dir="${sdk.library.project}/res/values-v14" />
+		</target>
+	<target name="check-v10" if="${target=android-10}">
+			<delete dir="${sdk.library.project}/res/values-v11" />
+			<delete dir="${sdk.library.project}/res/values-v14" />
+		</target>
+	<target name="check-v11" if="${target=android-11}" >
+			<delete dir="${sdk.library.project}/res/values-v14" />
+		</target>
+	<target name="check-v12" if="${target=android-12}" >
+			<delete dir="${sdk.library.project}/res/values-v14" />
+		</target>
+	<target name="check-v13" if="${target=android-13}" >
+		<delete dir="${sdk.library.project}/res/values-v14" />
+	</target>
+	
+	<macrodef name="add.sdk.permission">
+		<attribute name="permission" />
+		<sequential>
+			<replaceregexp file="AndroidManifest.xml" match="^[ \t]+(\074application)" replace="&#9;&lt;uses-permission android:name=&#34;@{permission}&#34; /&gt;&#13;&#10;&#9;&lt;application" byline="true" />
+		</sequential>
+	</macrodef>
+	<macrodef name="set.sdk.permission">
+		<attribute name="permission" />
+		<sequential>
+			<replaceregexp file="AndroidManifest.xml" match="^[ \t]+(\074application)" replace="&#9;&lt;permission android:name=&#34;@{permission}&#34; android:protectionLevel=&#34;normal&#34; /&gt;&#13;&#10;&#9;&lt;application" byline="true" />
+		</sequential>
+	</macrodef>
+
+</project>

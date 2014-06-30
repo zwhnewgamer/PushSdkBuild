@@ -9,5 +9,5 @@ PushSDK_Release
 		
 pushsdk.conf 	文件为默认配置，可以在此基础上修改。当文件不存时，可以通过ant 配置，生成新的配置文件。
 
-build.xml 		配置文件生成脚本。
+config.xml 		配置文件生成脚本。
 
