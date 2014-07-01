@@ -14,3 +14,4 @@ config.xml 		配置文件生成脚本。
 
 build
 ------
+pushsdk_setup.xml  sdk集成脚本
