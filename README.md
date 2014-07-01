@@ -18,3 +18,5 @@ pushsdk_setup.xml  sdk集成脚本。
 
 		脚本文件需放在工程根目录下。该脚本会自动集成sdk 且自动配置manifest文件。需要把 PushSDK_Release 工程导入eclipse中。
 		
+
+		
