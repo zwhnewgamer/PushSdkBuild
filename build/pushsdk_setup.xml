@@ -340,7 +340,6 @@ android.library.reference.${ref.index}=${sdk.library.project}</concat>
 		<copy todir="${basedir}/libs" overwrite="true">
 			<fileset dir="${sdk.library.project}/libs">
 				<include name="*.jar" />
-			    <include name="**/*.*" />
 				<exclude name="android-support-v4.jar" />
 			</fileset>
 		</copy>
