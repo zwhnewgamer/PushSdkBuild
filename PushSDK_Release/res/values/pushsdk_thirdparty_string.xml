@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+	<string name="permission_service">[your_prefix].android.permissions.SERVICE</string>
+	<string name="permission_provider">[your_prefix].android.permissions.PROVIDER</string>
+	<string name="permission_vote">[your_prefix].android.permissions.VOTE</string>
+	<string name="permission_client">[your_prefix].android.permissions.CLIENT</string>
+	<string name="action_protect_service_start">[your_prefix].intent.protect.service.action.START</string>
+	<string name="action_protect_broadcast_service">[your_prefix].intent.protect.service.action.BROADCAST</string>
+	<string name="action_protect_broadcast_clinet">[your_prefix].intent.protect.client.action.BROADCAST</string>
+	<string name="action_opensdk_vote">[your_prefix].intent.opensdk.action.VOTE</string>
+	<string name="action_opensdk_consult">[your_prefix].intent.opensdk.action.CONSULT</string>
+	<string name="action_api_service_start">[your_prefix].intent.api.service.action.START</string>
+	<string name="sdk_appid">3 </string>
+	<string name="sdk_appkey">m2VXU9c8mh8p4Hemhc7ROJf5HeCmg2dZ</string>
+	<string name="sdk_domain">TGXD_201405141634230591ktsNZU1FF</string>
+	<string name="sdk_scheme">[your_prefix]</string>
+    
+</resources>
+		
