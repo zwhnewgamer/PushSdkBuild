@@ -2,6 +2,8 @@ package com.tgx.sdk.push;
 
 import android.content.res.Resources;
 
+import com.tgx.push.sdk.R;
+
 public final class PushSDK_R {
 	public static Resources res;
 
