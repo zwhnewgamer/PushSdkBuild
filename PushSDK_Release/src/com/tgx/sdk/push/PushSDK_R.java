@@ -1,4 +1,4 @@
-package com.tgx.push.sdk;
+package com.tgx.sdk.push;
 
 import android.content.res.Resources;
 
