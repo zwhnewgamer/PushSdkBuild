@@ -13,7 +13,7 @@
 	<string name="action_api_service_start">[your_prefix].intent.api.service.action.START</string>
 	<string name="sdk_appid">3 </string>
 	<string name="sdk_appkey">m2VXU9c8mh8p4Hemhc7ROJf5HeCmg2dZ</string>
-	<string name="sdk_domain">TGXD_201405141634230591ktsNZU1FF</string>
+	<string name="sdk_app_domain">TGXD_201405141634230591ktsNZU1FF</string>
 	<string name="sdk_scheme">[your_prefix]</string>
     
 </resources>
