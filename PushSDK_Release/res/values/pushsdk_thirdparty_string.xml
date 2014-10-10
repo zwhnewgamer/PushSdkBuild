@@ -8,6 +8,7 @@
 	<string name="action_protect_broadcast_service">[your_prefix].intent.protect.service.action.BROADCAST</string>
 	<string name="action_protect_broadcast_clinet">[your_prefix].intent.protect.client.action.BROADCAST</string>
 	<string name="action_opensdk_vote">[your_prefix].intent.opensdk.action.VOTE</string>
+	<string name="action_opensdk_syn">[your_prefix].intent.opensdk.action.SYN</string>
 	<string name="action_opensdk_consult">[your_prefix].intent.opensdk.action.CONSULT</string>
 	<string name="action_api_service_start">[your_prefix].intent.api.service.action.START</string>
 	<string name="sdk_appid">3 </string>
