@@ -65,6 +65,14 @@
 				<equals arg1="${input.tgx.intent.opensdk.action.VOTE}" arg2="" trim="true" />
 			</not>
 		</condition>
+		<fail message="沒有設置action_opensdk_vote" unless="in.action_opensdk_vote" /> 
+		
+		<input addproperty="input.tgx.intent.opensdk.action.SYN" message="设置SDK的自协商发起广播的Action" />
+		<condition property="in.action_opensdk_syn">
+			<not>
+				<equals arg1="${input.tgx.intent.opensdk.action.SYN" arg2="" trim="true" />
+			</not>
+		</condition>
 		<fail message="沒有設置action_opensdk_vote" unless="in.action_opensdk_vote" />
 
 		<input addproperty="input.tgx.intent.opensdk.action.CONSULT" message="设置SDK的自协商结果接收广播的Action" />
@@ -124,6 +132,7 @@ input.tgx.intent.protect.service.action.START=${input.tgx.intent.protect.service
 input.tgx.intent.protect.service.action.BROADCAST=${input.tgx.intent.protect.service.action.BROADCAST}
 input.tgx.intent.protect.client.action.BROADCAST=${input.tgx.intent.protect.client.action.BROADCAST}
 input.tgx.intent.opensdk.action.VOTE=${input.tgx.intent.opensdk.action.VOTE}
+input.tgx.intent.opensdk.action.SYN=${input.tgx.intent.opensdk.action.SYN}
 input.tgx.intent.opensdk.action.CONSULT=${input.tgx.intent.opensdk.action.CONSULT}
 input.tgx.intent.api.service.action.START=${input.tgx.intent.api.service.action.START}
 input.tgx.sdk.appid=${input.tgx.sdk.appid}
@@ -144,11 +153,12 @@ input.tgx.sdk.scheme=${input.tgx.sdk.scheme}
 	&lt;string name="action_protect_broadcast_service"&gt;${input.tgx.intent.protect.service.action.BROADCAST}&lt;/string&gt;
 	&lt;string name="action_protect_broadcast_clinet"&gt;${input.tgx.intent.protect.client.action.BROADCAST}&lt;/string&gt;
 	&lt;string name="action_opensdk_vote"&gt;${input.tgx.intent.opensdk.action.VOTE}&lt;/string&gt;
+	&lt;string name="action_opensdk_syn"&gt;${input.tgx.intent.opensdk.action.SYN}&lt;/string&gt;
 	&lt;string name="action_opensdk_consult"&gt;${input.tgx.intent.opensdk.action.CONSULT}&lt;/string&gt;
 	&lt;string name="action_api_service_start"&gt;${input.tgx.intent.api.service.action.START}&lt;/string&gt;
 	&lt;string name="sdk_appid"&gt;${input.tgx.sdk.appid}&lt;/string&gt;
 	&lt;string name="sdk_appkey"&gt;${input.tgx.sdk.appkey}&lt;/string&gt;
-	&lt;string name="sdk_domain"&gt;${input.tgx.sdk.domain}&lt;/string&gt;
+	&lt;string name="sdk_app_domain"&gt;${input.tgx.sdk.domain}&lt;/string&gt;
 	&lt;string name="sdk_scheme"&gt;${input.tgx.sdk.scheme}&lt;/string&gt;
 &lt;/resources&gt;
 		</echo>
