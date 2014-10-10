@@ -4,11 +4,14 @@ import android.content.res.Resources;
 
 import com.tgx.push.sdk.R;
 
-public final class PushSDK_Ext_R {
+
+public final class PushSDK_Ext_R
+{
 	public static Resources res;
-
-	public static final class string {
-
+	
+	public static final class string
+	{
+		
 		public static int pushsdk_call_number() {
 			return R.string.pushsdk_call_number;
 		}
@@ -58,28 +61,29 @@ public final class PushSDK_Ext_R {
 		}
 		
 	}
-
-	public static final class drawable{
+	
+	public static final class drawable
+	{
 		
-		public static int app_logo(){
+		public static int app_logo() {
 			return R.drawable.ic_launcher;
 		}
 	}
 	
-	public static final class layout {
-
+	public static final class layout
+	{
+		
 		public static int pushsdk_notification() {
 			return R.layout.pushsdk_notification;
 		}
-
+		
 		public static int pushsdk_notification_v11() {
 			return R.layout.pushsdk_notification_v11;
 		}
-
-		public static int pushsdk_view(){
+		
+		public static int pushsdk_view() {
 			return R.layout.pushsdk_view;
 		}
-		
 		
 		public static int pushsdk_download_manager() {
 			return R.layout.pushsdk_download_manager;
@@ -88,7 +92,6 @@ public final class PushSDK_Ext_R {
 	
 	public static final class id
 	{
-		
 		
 		public static int progressBar() {
 			return R.id.progressBar;
@@ -152,6 +155,7 @@ public final class PushSDK_Ext_R {
 		public static int PushSdk_Dialog() {
 			return R.style.PushSdk_Dialog;
 		}
+		
 		public static int PushSdk_Theme_Dialog() {
 			return R.style.PushSdk_Theme_Dialog;
 		}
