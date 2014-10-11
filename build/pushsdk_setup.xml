@@ -6,9 +6,9 @@
 	<available file="${libs.name}" property="libs.dir.create" />
 	<property name="libs.dir" value="${basedir}/${libs.name}" />
 	<property name="libs.svnkit" value="${libs.dir}/svnkit" />
-	<property name="libs.svnkit.zip.url" value="http://www.svnkit.com/org.tmatesoft.svn_1.8.6.standalone.zip" />
+	<property name="libs.svnkit.zip.url" value="http://blog.yuewuxian.com/APK/org.tmatesoft.svn_1.8.6.standalone.zip" />
 	<property name="libs.svnkit.zip" value="org.tmatesoft.svn_1.8.6.standalone.zip" />
-	<property name="libs.svnkit.home" value="${libs.svnkit}/svnkit-1.8”.6 />
+	<property name="libs.svnkit.home" value="${libs.svnkit}/svnkit-1.8.6" />
 	<condition property="libs.svnkit.run" value="${libs.svnkit.home}\bin\jsvn.bat" else="${libs.svnkit.home}/bin/jsvn">
 		<os family="windows" />
 	</condition>
