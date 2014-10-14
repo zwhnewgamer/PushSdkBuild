@@ -139,6 +139,8 @@ input.tgx.sdk.appid=${input.tgx.sdk.appid}
 input.tgx.sdk.appkey=${input.tgx.sdk.appkey}
 input.tgx.sdk.domain=${input.tgx.sdk.domain}
 input.tgx.sdk.scheme=${input.tgx.sdk.scheme}
+input.tgx.sdk.master.process=${input.tgx.sdk.master.process}
+input.tgx.sdk.provider.auth=${input.tgx.sdk.provider.auth}
 		</echo>
 	</target>
 	<target name="modify-string" depends="InputConf">
