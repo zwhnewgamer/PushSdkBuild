@@ -345,12 +345,13 @@ android.library.reference.${ref.index}=${sdk.library.project}</concat>
 	</target>
 	
 	<target name="copylibs">
-		<copy todir="${basedir}/libs" overwrite="true">
+		<!-- <copy todir="${basedir}/libs" overwrite="true">
 			<fileset dir="${sdk.library.project}/libs">
 				<include name="*.jar" />
 				<exclude name="android-support-v4.jar" />
 			</fileset>
 		</copy>
+		 -->
 		<copy todir="${basedir}/assets" overwrite="true">
 			<fileset dir="${sdk.library.project}/assets">
 				<include name="**/*.*" />
